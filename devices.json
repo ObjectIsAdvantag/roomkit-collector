@@ -1,0 +1,16 @@
+[
+    {
+        "name": "RK_Theater",
+        "location": "Theater",
+        "ip" : "100.101.3.60",
+        "username" : "integrator",
+        "password" : "integrator"
+    },
+    {
+        "name": "RK_Workshop1",
+        "location": "Workshop1",
+        "ip" : "100.103.1.11",
+        "username" : "integrator",
+        "password" : "integrator"
+    }
+]
