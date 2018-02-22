@@ -1,3 +1,13 @@
+//
+// Copyright (c) 2017 Cisco Systems
+// Licensed under the MIT License 
+//
+
+
+/** 
+ * Collects PeopleCount analystics from a collection of RoomKits
+ * with a moving window interval
+ */
 
 
 const debug = require("debug")("collector");

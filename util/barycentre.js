@@ -1,4 +1,9 @@
 
+/** 
+ * Collects PeopleCount analystics from a collection of RoomKits
+ */
+
+ 
 // A series is an ordered collection of ticks and values
 // tick are formatted as dates
 
