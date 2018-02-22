@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Collect",
-            "program": "${workspaceFolder}/collect.js",
+            "program": "${workspaceFolder}/collector/collect.js",
             "env" : {
                 "DEBUG" : "collector*"
             }
@@ -17,7 +17,7 @@
             "type": "node",
             "request": "launch",
             "name": "Window",
-            "program": "${workspaceFolder}/collect-window.js",
+            "program": "${workspaceFolder}/collector/collect-window.js",
             "env" : {
                 "DEBUG" : "collector*",
                 "WINDOW" : 30
