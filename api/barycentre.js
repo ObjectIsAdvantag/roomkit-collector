@@ -3,7 +3,6 @@
 // Licensed under the MIT License 
 //
 
-
 /** 
  * Collects PeopleCount analystics from a collection of RoomKits
  */
@@ -15,7 +14,7 @@
 // Computes the weighted average on the period (begin/end)
 // for the time-series values (as a map of time / values)
 // The algorithm considers the values are substains till next serie is registered
-function computeBarycentre(series, from, to) {
+module.exports.computeBarycentre = function (series, from, to) {
     var computed = 0;
     var previousSerie = undefined;
     var begun = false;
@@ -47,15 +46,3 @@ function computeBarycentre(series, from, to) {
 
     return computed / (new Date(to).getTime() - new Date(from).getTime());
 }
-
-var data = [
-    ["2018-02-21T20:24:05.000Z", 4],
-    ["2018-02-21T20:24:11.000Z", 1],
-    ["2018-02-21T20:24:12.000Z", 2],
-    ["2018-02-21T20:24:13.000Z", 3],
-    ["2018-02-21T20:24:16.000Z", 10]
-];
-
-var res = computeBarycentre(data, "2018-02-21T20:24:11.000Z", "2018-02-21T20:24:13.000Z");
-console.log("avg weighted: " + res)
-

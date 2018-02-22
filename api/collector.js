@@ -150,6 +150,8 @@ setInterval(function () {
 // Return people count for the device and averaged on the period (in seconds)
 //
 
+const { computeBarycentre } = require("./barycentre");
+
 module.exports.averageOnPeriod = function (device, period) {
     fine(`searching store for device: ${device}`);
 
@@ -162,9 +164,12 @@ module.exports.averageOnPeriod = function (device, period) {
     fine(`found store for device: ${device}`);
 
     // Compute average
-    // [TODO]
-    //const avg = compute
-    return 5;
+    const to = new Date(Date.now()).toISOString();
+    const from = new Date(Date.now() - period*1000).toISOString();
+    const avg = computeBarycentre(store, from, to);
+    fine(`computed avg: ${avg}, over last: ${period} seconds, for device: ${device}`);
+
+    return avg;
 }
 
 module.exports.latest = function (device) {
@@ -178,13 +183,7 @@ module.exports.latest = function (device) {
 
     // Looking for last serie
     const lastSerie = store[store.length - 1];
-    fine(`found last serie with date: ${}, value: ${}, for device: ${device}`);
+    fine(`found last serie with value: ${lastSerie[1]}, date: ${lastSerie[0]}, for device: ${device}`);
 
     return lastSerie[1];
 }
-
-module.exports.stores = stores;
-
-
-
-
