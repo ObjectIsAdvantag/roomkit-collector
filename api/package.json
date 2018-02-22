@@ -1,10 +1,11 @@
 {
-  "name": "batch",
+  "name": "roomkit-collector",
   "version": "0.1.0",
   "description": "Aggregates PeopleCount metrics from RoomKits",
-  "main": "collect-window.js",
+  "main": "server.js",
   "dependencies": {
     "debug": "^3.1.0",
+    "express": "^4.16.2",
     "jsxapi": "^4.1.2"
   },
   "devDependencies": {},
