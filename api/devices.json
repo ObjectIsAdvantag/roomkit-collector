@@ -1,14 +1,14 @@
 [
     {
-        "name": "RK_Theater",
-        "location": "Theater",
+        "name": "Theater",
+        "location": "CLANZ DevNetZone Theater",
         "ip" : "100.101.3.60",
         "username" : "integrator",
         "password" : "integrator"
     },
     {
-        "name": "RK_Workshop1",
-        "location": "Workshop1",
+        "name": "Workshop1",
+        "location": "CLANZ DevNetZone Workshop1",
         "ip" : "100.103.1.11",
         "username" : "integrator",
         "password" : "integrator"

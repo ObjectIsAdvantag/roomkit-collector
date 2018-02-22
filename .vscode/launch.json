@@ -7,7 +7,19 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "API",
+            "cwd": "${workspaceFolder}/api",
+            "program": "${workspaceFolder}/api/server.js",
+            "env" : {
+                "DEBUG" : "collector*, api*",
+                "WINDOW" : 30
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Collect",
+            "cwd": "${workspaceFolder}/collector",
             "program": "${workspaceFolder}/collector/collect.js",
             "env" : {
                 "DEBUG" : "collector*"

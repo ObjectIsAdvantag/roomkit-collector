@@ -28,13 +28,15 @@ const { latest, averageOnPeriod } = require("./collector");
 app.get("/analytics/:device/last", function (req, res) {
     const device = req.params.device;
 
-    let period = req.query.period;
-    if (!period) {
-        period = 15; // in seconds
-    }
-
     // Retreive count data for device
     const count = latest(device);
+
+    if (!count) {
+        res.status(404).json({
+            message: `no collecting data for device: ${device}`
+        });
+        return;
+    }
 
     res.json({
         device: device,
@@ -45,13 +47,14 @@ app.get("/analytics/:device/last", function (req, res) {
 app.get("/analytics/:device/average", function (req, res) {
     const device = req.params.device;
 
+    // Get period (in seconds)
     let period = req.query.period;
     if (!period) {
-        period = 15; // in seconds
+        period = 15; // default to 15s
     }
 
     // Retreive count data for device
-    const count = averageOnPeriod(device, 10);
+    const count = averageOnPeriod(device, period);
 
     res.json({
         device: device,

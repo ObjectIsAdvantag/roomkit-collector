@@ -151,14 +151,39 @@ setInterval(function () {
 //
 
 module.exports.averageOnPeriod = function (device, period) {
+    fine(`searching store for device: ${device}`);
+
+    const store = stores[device];
+    if (!store) {
+        fine(`could not find store for device: ${device}`);
+        return undefined;
+    }
+
+    fine(`found store for device: ${device}`);
+
+    // Compute average
     // [TODO]
-    return 11;
+    //const avg = compute
+    return 5;
 }
 
 module.exports.latest = function (device) {
-    // [TODO]
-    return 8;
+    fine(`searching store for device: ${device}`);
+    const store = stores[device];
+    if (!store) {
+        fine(`could not find store for device: ${device}`);
+        return undefined;
+    }
+    fine(`found store for device: ${device}`);
+
+    // Looking for last serie
+    const lastSerie = store[store.length - 1];
+    fine(`found last serie with date: ${}, value: ${}, for device: ${device}`);
+
+    return lastSerie[1];
 }
+
+module.exports.stores = stores;
 
 
 
