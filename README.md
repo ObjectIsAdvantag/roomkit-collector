@@ -1,11 +1,15 @@
-# TimeSeries Collector for RoomKits
+# PeopleCount Collector for RoomKits
 
-Collects PeopleCount time series from RoomKits, and computes averaged counters
+Collect PeopleCount events as time series from RoomKits, and expose stable counters via a REST API.
+
+Background: 
+- RoomKits fire events every time they notice a change for the PeopleCount counter. As participants in a Meeting Room are moving their faces, it is frequent to see regular changes to the PeopleCount counter being fired. If queried mutiple times, even in close intervalls, the PeopleCount value for a RoomKit should be expected to differ.
+- The collector batch and barycentre utility create a stable counter for each device part of a RoomKit deployment. The PeopleCounter events for each device is collected in a in-memory timeseries database, and the REST API lets you compute instantly an averaged value for a custom period of time.
 
 This repo contains 3 components:
-- collector: collects PeopleCount events for a pre-configured list of devices, collects as TimeSeries (also recycles TimeSeries out of the observation window)
-- barycentre: computes an average value from a Time Series, by weighting each value based on its duration (before next event happens)
-- API: exposes the latest and average weigthed number from PeopleCount events fired by the pre-configured list of devices
+- collector batch: collects PeopleCount events for a pre-configured list of devices, collects as TimeSeries (also recycles TimeSeries out of the observation window)
+- barycentre utility: computes an average value from a Time Series, by weighting each value based on its duration (before next event happens)
+- REST API: exposes the latest and average weigthed number from PeopleCount events fired by the pre-configured list of devices
 
 
 ## API
@@ -18,7 +22,7 @@ To install the API, run the instructions below:
     npm install
     ```
 
-From the 'api/' directory, edit the devices.json file with your RoomKit deployment.
+From the 'api/' directory, edit the [devices.json file](api/devices.json) with your RoomKit deployment.
 Here is an example used for Cisco Live Melbourne 2018:
 
     ```json
@@ -50,9 +54,6 @@ Here is an example used for Cisco Live Melbourne 2018:
 Now, run the API in DEBUG mode, and with an observation window of 900 seconds (timeseries older than 15 min are erased):
 
     ```shell
-    git clone https://github.com/ObjectIsAdvantag/roomkit-collector
-    cd api
-    npm install
     DEBUG=collector*,api*  WINDOW=900   node server.js
     ```
 
@@ -77,4 +78,4 @@ You can now query the API (make sure to replace 'Theater' below by one of your d
 
 ## History
 
-v0.1: created at BCX18 - Bosch IoT Hackathon Berlin
+v0.1: created at [BCX18 - Bosch IoT Hackathon Berlin](https://github.com/ObjectIsAdvantag/hackathon-resources/tree/master/bcx18-berlin)
