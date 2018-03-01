@@ -18,7 +18,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Collector",
+            "name": "Collect",
             "cwd": "${workspaceFolder}/collector",
             "program": "${workspaceFolder}/collector/collect.js",
             "env" : {
@@ -28,7 +28,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Window",
+            "name": "Collect (Window)",
             "cwd": "${workspaceFolder}/collector",
             "program": "${workspaceFolder}/collector/collect-window.js",
             "env" : {
@@ -39,9 +39,20 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Barycentre",
+            "name": "Collector (Barycentre)",
             "cwd": "${workspaceFolder}/collector/tests",
             "program": "${workspaceFolder}/collector/tests/schedule-barycentre.js",
+            "env" : {
+                "DEBUG" : "*",
+                "WINDOW" : 900
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Barycentre",
+            "cwd": "${workspaceFolder}/util/tests",
+            "program": "${workspaceFolder}/util/tests/to-after-last-counter.js",
             "env" : {
                 "DEBUG" : "*",
                 "WINDOW" : 900

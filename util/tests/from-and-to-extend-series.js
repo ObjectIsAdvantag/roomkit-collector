@@ -8,5 +8,5 @@ var data = [
 
 const { computeBarycentre } = require("../barycentre");
 
-var res = computeBarycentre(data, "2018-02-21T20:24:11.000Z", "2018-02-21T20:24:13.000Z");
-console.log("avg weighted: " + res)
+var res = computeBarycentre(data, "2018-02-21T20:24:10.000Z", "2018-02-21T20:24:15.000Z");
+console.log(`computed weighted: ${res}, expecting: 2.6`);

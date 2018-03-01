@@ -44,8 +44,9 @@ module.exports.computeBarycentre = function (series, from, to) {
         }
 
         if (serie[0] >= to) {
-            // we are done, compute till to
+            // we are done, add serie's value till 'to'
             computed += previousSerie[1] * (new Date(to).getTime() - new Date(previousSerie[0]).getTime());
+            previousSerie = serie;
             break;
         }
 
@@ -61,11 +62,22 @@ module.exports.computeBarycentre = function (series, from, to) {
         previousSerie = serie;
     }
 
-    // If from is after the last serie, simply return the last serie
-    var barycentre = computed / (new Date(to).getTime() - new Date(from).getTime() - skippedMilliseconds);
+    // Compute average for standard cases between to and from bounts
+    // 2 exceptions though, when from or to are after the last series
+    // Exception 1: from is after last serie
+    let barycentre;
     if (!begun) {
         barycentre = previousSerie[1];
     }
+    // Exception 2: to is after last serie
+    else if (to >= previousSerie[0]) {
+        // add serie's value till 'to'
+        computed += previousSerie[1] * (new Date(to).getTime() - new Date(previousSerie[0]).getTime());
+    }
+    if (!barycentre) {
+        barycentre = computed / (new Date(to).getTime() - new Date(from).getTime() - skippedMilliseconds);
+    }
+
     fine(`computed barycentre: ${barycentre}`)
     return barycentre;
 }
