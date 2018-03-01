@@ -23,7 +23,7 @@ app.route("/")
         });
     })
 
-const { latest, averageOnPeriod } = require("./collector");
+const { latest, averageOnPeriod } = require("../collector/collector");
 
 app.get("/analytics/:device/last", function (req, res) {
     const device = req.params.device;
@@ -33,7 +33,7 @@ app.get("/analytics/:device/last", function (req, res) {
 
     if (!count) {
         res.status(404).json({
-            message: `no collecting data for device: ${device}`
+            message: `not collecting data for device: ${device}`
         });
         return;
     }
@@ -54,14 +54,22 @@ app.get("/analytics/:device/average", function (req, res) {
     }
 
     // Retreive count data for device
-    const count = averageOnPeriod(device, period);
+    try {
+        const count = averageOnPeriod(device, period);
 
-    res.json({
-        device: device,
-        peopleCount: count,
-        period: period,
-        unit: "seconds"
-    });
+        res.json({
+            device: device,
+            peopleCount: count,
+            period: period,
+            unit: "seconds"
+        });
+    }
+    catch (err) {
+        fine(`could not compute average, err: ${err.message}`);
+        res.status(400).json({
+            message: `period starts before we started collecting data for the device`
+        });
+    }
 })
 
 

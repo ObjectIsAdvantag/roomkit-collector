@@ -18,7 +18,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Collect",
+            "name": "Collector",
             "cwd": "${workspaceFolder}/collector",
             "program": "${workspaceFolder}/collector/collect.js",
             "env" : {
@@ -29,10 +29,22 @@
             "type": "node",
             "request": "launch",
             "name": "Window",
+            "cwd": "${workspaceFolder}/collector",
             "program": "${workspaceFolder}/collector/collect-window.js",
             "env" : {
                 "DEBUG" : "collector*",
                 "WINDOW" : 30
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Barycentre",
+            "cwd": "${workspaceFolder}/collector/tests",
+            "program": "${workspaceFolder}/collector/tests/schedule-barycentre.js",
+            "env" : {
+                "DEBUG" : "*",
+                "WINDOW" : 900
             }
         }
     ]

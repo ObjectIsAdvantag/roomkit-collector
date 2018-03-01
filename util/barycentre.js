@@ -3,10 +3,12 @@
 // Licensed under the MIT License 
 //
 
-
 /** 
  * Collects PeopleCount analystics from a collection of RoomKits
  */
+
+const debug = require("debug")("barycentre");
+const fine = require("debug")("barycentre:fine");
 
  
 // A series is an ordered collection of ticks and values
@@ -15,12 +17,14 @@
 // Computes the weighted average on the period (begin/end)
 // for the time-series values (as a map of time / values)
 // The algorithm considers the values are substains till next serie is registered
-function computeBarycentre(series, from, to) {
-    var computed = 0;
-    var previousSerie = undefined;
-    var begun = false;
+module.exports.computeBarycentre = function (series, from, to) {
+    let computed = 0;
+    let previousSerie = undefined;
+    let begun = false;
+    let skippedMilliseconds = 0; // Store periods where the device was not counting (typically went to standby mode)
 
-    // throws an error if from is before the series begins
+    fine(`requested to compute barycentre from: ${from}, to: ${to}, with ${series.length} values in serie`)
+
     for (var i = 0; i < series.length; i++) {
         var serie = series[i];
         if (serie[0] <= from) {
@@ -30,6 +34,11 @@ function computeBarycentre(series, from, to) {
         }
 
         if (!begun) {
+            if (!previousSerie) {
+               // throw an error if from is before the series begins
+               throw new Error("from is before serie begins")
+            }
+
             previousSerie = [ from, previousSerie[1]];
             begun = true;
         }
@@ -40,22 +49,23 @@ function computeBarycentre(series, from, to) {
             break;
         }
 
-        // let's add the value of the period
-        computed += previousSerie[1] * (new Date(serie[0]).getTime() - new Date(previousSerie[0]).getTime());
+        // if the value to add is negative, we were not counting on this period, simply skip it
+        if (previousSerie[1] < 0) {
+            skippedMilliseconds = new Date(serie[0]).getTime() - new Date(previousSerie[0]).getTime();
+        }
+        else {
+            // let's add the value for the period
+            computed += previousSerie[1] * (new Date(serie[0]).getTime() - new Date(previousSerie[0]).getTime());
+        }
+
         previousSerie = serie;
     }
 
-    return computed / (new Date(to).getTime() - new Date(from).getTime());
+    // If from is after the last serie, simply return the last serie
+    var barycentre = computed / (new Date(to).getTime() - new Date(from).getTime() - skippedMilliseconds);
+    if (!begun) {
+        barycentre = previousSerie[1];
+    }
+    fine(`computed barycentre: ${barycentre}`)
+    return barycentre;
 }
-
-var data = [
-    ["2018-02-21T20:24:05.000Z", 4],
-    ["2018-02-21T20:24:11.000Z", 1],
-    ["2018-02-21T20:24:12.000Z", 2],
-    ["2018-02-21T20:24:13.000Z", 3],
-    ["2018-02-21T20:24:16.000Z", 10]
-];
-
-var res = computeBarycentre(data, "2018-02-21T20:24:11.000Z", "2018-02-21T20:24:13.000Z");
-console.log("avg weighted: " + res)
-
