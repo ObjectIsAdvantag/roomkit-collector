@@ -23,7 +23,7 @@ app.route("/")
         });
     })
 
-const { latest, averageOnPeriod } = require("../collector/collector");
+const { latest, averageOnPeriod } = require("./collector");
 
 app.get("/analytics/:device/last", function (req, res) {
     const device = req.params.device;

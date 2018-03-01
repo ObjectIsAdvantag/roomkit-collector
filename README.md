@@ -1,15 +1,15 @@
 # PeopleCount Collector for RoomKits
 
-Collect PeopleCount events as time series from RoomKits, and expose stable counters via a REST API.
+Collect PeopleCount events as time series from RoomKits, and expose counters via a REST API.
 
 Background: 
 - RoomKits fire events every time they notice a change for the PeopleCount counter. As participants in a Meeting Room are moving their faces, it is frequent to see regular changes to the PeopleCount counter being fired. If queried mutiple times, even in close intervalls, the PeopleCount value for a RoomKit should be expected to differ.
 - The collector batch and barycentre utility create a stable counter for each device part of a RoomKit deployment. The PeopleCounter events for each device is collected in a in-memory timeseries database, and the REST API lets you compute instantly an averaged value for a custom period of time.
 
 This repo contains 3 components:
-- collector batch: collects PeopleCount events for a pre-configured list of devices, collects as TimeSeries (also recycles TimeSeries out of the observation window)
-- barycentre utility: computes an average value from a Time Series, by weighting each value based on its duration (before next event happens)
-- REST API: exposes the latest and average weigthed number from PeopleCount events fired by the pre-configured list of devices
+1. barycentre utility: computes an average value from a Time Series, by weighting each value based on its duration (before next event happens)
+2. collector batch: collects PeopleCount events for a pre-configured list of devices, collects as TimeSeries (also recycles TimeSeries out of the observation window)
+3. **REST API**: exposes the latest and average weighted value from PeopleCount events fired by the pre-configured list of devices
 
 
 ## API
