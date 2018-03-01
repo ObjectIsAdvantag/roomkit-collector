@@ -1,17 +1,35 @@
 //
-// Server receive the events
+// Copyright (c) 2017 Cisco Systems
+// Licensed under the MIT License 
+//
+
+
+/**
+ * REST API that exposes RoomAnalytics
+ */
+
+var debug = require("debug")("api");
+var fine = require("debug")("api:fine");
+
+
+//
+// HTTP Service
 // 
 
 var express = require("express");
 var app = express();
 
+// Enable CORS
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+// Add JSON parsing
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-var debug = require("debug")("api");
-var fine = require("debug")("api:fine");
-
 
 var started = Date.now();
 app.route("/")
