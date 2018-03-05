@@ -40,12 +40,16 @@
 
         var devices = {};
 
-        devices['Theater'] = {
-            "peopleCountURL": "http://localhost:8080/analytics/Theater/average?period=15"
+        devices['DemoPod'] = {
+            "peopleCountURL": "https://b7f07ef6.ngrok.io/analytics/DemoPod/average?period=15"
         }
 
         devices['Workshop1'] = {
-            "peopleCountURL": "http://localhost:8080/analytics/Workshop1/average?period=15"
+            "peopleCountURL": "https://b7f07ef6.ngrok.io/analytics/Workshop1/average?period=15"
+        }
+
+        devices['Workshop2'] = {
+            "peopleCountURL": "https://b7f07ef6.ngrok.io/analytics/Workshop2/average?period=15"
         }
 
         var tooltips = {};
@@ -87,6 +91,8 @@
                 .done(function (data, textStatus, jqXHR) {
                     var count = data.peopleCount;
                     console.debug(`fetched count: ${count}, for device: ${device}`);
+                    count = Math.round(count);
+                    console.debug(`rounded to count: ${count}, for device: ${device}`);
 
                     setTooltipContentOnPlace("" + count, place);
                 })
@@ -126,7 +132,9 @@
                 }
 
                 _.forEach(places, function (place, index) {
-                    addTooltipOnPlace('0', place, map);
+                    if (place.data.active) {
+                        addTooltipOnPlace('0', place, map);
+                    }
                 });
 
                 setInterval(function () {
