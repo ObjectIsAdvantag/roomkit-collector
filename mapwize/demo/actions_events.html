@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapwize.js Demo - Actions & Events</title>
+
+    <script src="../dist/mapwize.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../dist/mapwize.css" />
+
+    <style>
+        #map {
+            display: block;
+            width:800px;
+            height: 500px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+    <input type="button" value="Center on coordinates" onclick="map.centerOnCoordinates(49.742313935073504183, 4.5989323407411575317,null,18);" >
+    <input type="button" value="Set floor 2" onclick="map.setFloor(2);" >
+    <input type="button" value="Set zoom 19" onclick="map.setZoom(19);" >
+    <input type="button" value="Center on demo venue" onclick="map.centerOnVenue('56c2ea3402275a0b00fb00ac');" >
+    <input type="button" value="Center on place bank" onclick="map.centerOnPlace('56c3454002275a0b00fb00c7');" >
+    <input type="button" value="Set user position" onclick="map.setUserPosition({
+                    latitude: 49.74253666543266,
+                    longitude: 4.599013477563858,
+                    floor: 2,
+                    accuracy: 2
+                });" >
+    <input type="button" value="Center on user" onclick="map.centerOnUser(15);" >
+    <input type="button" value="Unlock position" onclick="map.unlockUserPosition();" >
+    <input type="button" value="Show directions" onclick="map.showDirections({placeId:'56c3454002275a0b00fb00c7'}, {placeId:'56c3504102275a0b00fb00fa'}, null, function (){});" >
+    <input type="button" value="Stop directions" onclick="map.stopDirections();" >
+
+    <script>
+
+        var bounds = new L.LatLngBounds(
+                new L.LatLng(49.742313935073504183, 4.5989323407411575317),
+                new L.LatLng(49.742851692813445652, 4.5997658371925345122)
+        );
+
+        var map = Mapwize.map('map', {
+            apiKey: '1f04d780dc30b774c0c10f53e3c7d4ea',      // PASTE YOU API KEY HERE !!! This is a demo key. It is not allowed to use it for production. The key might change at any time without notice.
+            accessKey: 'demo'                                // Key to gain access to the demo building
+        });
+        map.fitBounds(bounds);
+
+        map.on('click', function(e){
+            console.log(e);
+        });
+
+        map.on('contextmenu', function(e){
+            console.log(e);
+        });
+
+        map.on('moveend', function(e){
+            console.log(e);
+        });
+
+        map.on('placeClick', function(e){
+            console.log(e);
+        });
+
+        map.on('floorsChange', function(e){
+            console.log(e);
+        });
+
+        map.on('floorChange', function(e){
+            console.log(e);
+        });
+
+        map.on('userPositionChange', function(e){
+            console.log(e);
+        });
+
+        map.on('directionsStart', function(e){
+            console.log(e);
+        });
+
+        map.on('directionsStop', function(e){
+            console.log(e);
+        });
+
+        map.on('followUserModeChange', function(e){
+            console.log(e);
+        });
+</script>
+
+</body>
+</html>

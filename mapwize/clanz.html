@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mapwize.js Demo - simple map</title>
+
+    <script src="../dist/mapwize.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../dist/mapwize.css" />
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js" type="text/javascript"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .tooltip {
+            font-size: 30px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+    <script>
+
+        var devices = {};
+
+        devices['Theater'] = {
+            "peopleCountURL": "http://localhost:8080/analytics/Theater/average?period=15"
+        }
+
+        devices['Workshop1'] = {
+            "peopleCountURL": "http://localhost:8080/analytics/Workshop1/average?period=15"
+        }
+
+        var tooltips = {};
+
+        function addTooltipOnPlace(text, place, map) {
+            // Create Tooltip
+            var placeLayer = L.GeoJSON.geometryToLayer(place.geometry);
+            placeLayer.setStyle({
+                fillOpacity: 0,
+                opacity: 0
+            });
+            placeLayer.bindTooltip(text, { direction: 'top', permanent: true, className: 'tooltip' }).addTo(map);
+
+            // Store
+            tooltips[place.name] = placeLayer;
+        }
+
+        function setTooltipContentOnPlace(text, place) {
+            var placeLayer = tooltips[place.name];
+            placeLayer.setTooltipContent(text);
+        }
+
+        function updateTooltip(place) {
+            var device = devices[place.name];
+            if (!device) {
+                console.debug("no device configured for place: " + place.name);
+                return;
+            }
+
+            // Fetch people count
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": device.peopleCountURL,
+                "method": "GET"
+            }
+
+            $.ajax(settings)
+                .done(function (data, textStatus, jqXHR) {
+                    var count = data.peopleCount;
+                    console.debug(`fetched count: ${count}, for device: ${device}`);
+
+                    setTooltipContentOnPlace("" + count, place);
+                })
+                .fail(function (jqXHR, textStatus) {
+                    console.debug(`Request failed: ${textStatus}`);
+                });
+        }
+
+        function updateTooltips(places) {
+            _.forEach(places, function (place, index) {
+                updateTooltip(place);
+            });
+        }
+
+        Mapwize.setApiKey('44522145c08665f3fbd051d78694243a');
+
+        var venueId = '5a8d9820c2474a0013d70666';
+        Mapwize.Api.getVenue(venueId, function (err, venue) {
+            if (err) {
+                console.error(err);
+            }
+
+            // Create the map
+            var map = Mapwize.map('map', {});
+
+            // Fits the bounds of the map so the entire region is visible.
+            var venueBounds = new L.LatLngBounds(
+                new L.LatLng(venue.latitudeMin, venue.longitudeMin),
+                new L.LatLng(venue.latitudeMax, venue.longitudeMax)
+            );
+            map.fitBounds(venueBounds);
+
+            // Retrieve the places of the venue
+            Mapwize.Api.getPlaces({ venueId: venueId }, function (err, places) {
+                if (err) {
+                    console.error(err);
+                }
+
+                _.forEach(places, function (place, index) {
+                    addTooltipOnPlace('0', place, map);
+                });
+
+                setInterval(function () {
+                    updateTooltips(places);
+                }, 5000);
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>

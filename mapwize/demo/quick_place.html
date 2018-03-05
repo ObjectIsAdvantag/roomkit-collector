@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="demoApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapwize.js Demo - Quick places</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../dist/mapwize.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="../dist/mapwize.js" type="text/javascript"></script>
+
+    <style>
+        #map {
+            display: block;
+            height: 700px;
+        }
+    </style>
+
+</head>
+
+<body ng-controller="DemoController">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8">
+            <div id="map"></div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="list-group">
+                        <a class="list-group-item" ng-repeat="cell in cells" ng-class="{active: selected == $index}" ng-click="selectCell($index);">
+                            <span ng-show="!cell.pos">
+                                <span ng-show="selected != $index">Click to select</span>
+                                <span ng-show="selected == $index">Click on map</span>
+                            </span>
+                            <span ng-show="cell.pos">{{cell.pos.lat}} - {{cell.pos.lng}} - {{cell.floor}}</span>
+                        </a>
+                    </div>
+
+                    <button type="button" class="btn btn-block btn-primary" ng-click="addCell();">Add Cell</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var demoApp = angular.module('demoApp', []);
+
+    demoApp.controller('DemoController', function ($scope) {
+        $scope.safeApply = function(fn) {
+            var phase = this.$root.$$phase;
+            if(phase === '$apply' || phase === '$digest') {
+                if(fn && (typeof(fn) === 'function')) {
+                    fn();
+                }
+            } else {
+                this.$apply(fn);
+            }
+        };
+
+
+        $scope.cells = [
+            {pos: null, floor: null},
+            {pos: null, floor: null}
+        ];
+
+        $scope.selected = null;
+
+        var mapInstance = Mapwize.map('map', {
+            apiKey: '1f04d780dc30b774c0c10f53e3c7d4ea',      // PASTE YOU API KEY HERE !!! This is a demo key. It is not allowed to use it for production. The key might change at any time without notice.
+            accessKey: 'demo'                                // Key to gain access to the demo building
+        }, function (err) {
+            if (err) {
+                console.error('Error on map init', err);
+                return;
+            }
+
+            $scope.map = mapInstance;
+
+            var bounds = new L.LatLngBounds(
+                    new L.LatLng(49.742313935073504183, 4.5989323407411575317),
+                    new L.LatLng(49.742851692813445652, 4.5997658371925345122)
+            );
+            $scope.map.fitBounds(bounds);
+
+            $scope.map.on('click', function (e) {
+                $scope.safeApply(function () {
+                    if ($scope.selected != null) {
+                        $scope.cells[$scope.selected].pos = e.latlng;
+                        $scope.cells[$scope.selected].floor = $scope.map.getFloor();
+                        $scope.refreshMarker($scope.cells[$scope.selected]);
+                    }
+                });
+            });
+
+            $scope.map.on('placeClick', function (e) {
+                $scope.safeApply(function () {
+                    if ($scope.selected != null) {
+                        $scope.cells[$scope.selected].pos = e.e.latlng;
+                        $scope.cells[$scope.selected].floor = e.place.floor;
+                        $scope.refreshMarker($scope.cells[$scope.selected]);
+                    }
+                });
+            });
+        });
+
+
+        $scope.addCell = function () {
+            $scope.cells.push({pos: null, floor: null});
+        };
+        $scope.selectCell = function (index) {
+            $scope.selected = index;
+            $scope.refreshMarker($scope.cells[$scope.selected]);
+        };
+
+        $scope.refreshMarker = function (value) {
+            if ($scope.map) {
+                $scope.map.removeMarkers();
+                if (value.pos) {
+                    $scope.map.addMarker({
+                        latitude: value.pos.lat,
+                        longitude: value.pos.lng,
+                        floor: value.floor
+                    });
+                }
+            }
+        }
+
+    });
+
+
+</script>
+
+</body>
+</html>

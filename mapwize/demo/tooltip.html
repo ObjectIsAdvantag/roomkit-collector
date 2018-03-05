@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapwize.js Demo - simple map</title>
+
+    <script src="../dist/mapwize.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../dist/mapwize.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js" type="text/javascript"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            position:absolute; top:0; bottom:0; width:100%;
+            height: 100%;
+        }
+
+        .tooltip {
+            font-size: 30px;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+
+    var VENUEID = '56c2ea3402275a0b00fb00ac'; //Demo venue
+
+    Mapwize.setApiKey('1f04d780dc30b774c0c10f53e3c7d4ea'); // PASTE YOU API KEY HERE !!! This is a demo key, giving you access to the demo building. It is not allowed to use it for production. The key might change at any time without notice.
+
+
+
+    var placeLayerByPlaceName = {};
+
+    function addTooltipOnPlace(text, place, map) {
+        var placeLayer = L.GeoJSON.geometryToLayer(place.geometry);
+        placeLayer.setStyle({
+            fillOpacity: 0,
+            opacity: 0
+        });
+        placeLayer.bindTooltip(text, {direction: 'top', permanent: true, className: 'tooltip'}).addTo(map);
+        placeLayerByPlaceName[place.name] = placeLayer;
+    }
+
+    function setTooltipContentOnPlace(text, place) {
+        var placeLayer = placeLayerByPlaceName[place.name];
+        placeLayer.setTooltipContent(text);
+    }
+
+
+    Mapwize.Api.getVenue(VENUEID, function (err, venue) {
+        if (err) {
+            console.error(err);
+        }
+
+        var venueBounds = new L.LatLngBounds(
+                new L.LatLng(venue.latitudeMin, venue.longitudeMin),
+                new L.LatLng(venue.latitudeMax, venue.longitudeMax)
+        );
+
+        //Create the map
+        var map = Mapwize.map('map', {});
+
+        //Fits the bounds of the map so the entire region is visible.
+        map.fitBounds(venueBounds);
+
+        //Retrieve the places of the venue
+        Mapwize.Api.getPlaces({venueId: VENUEID}, function (err, places) {
+            placesByName = _.keyBy(places, 'name');
+
+            //Add some tooltips
+            addTooltipOnPlace('X', placesByName['Hammam'], map);
+
+            var i = 1;
+            setInterval(function(){
+                setTooltipContentOnPlace( ''+ i, placesByName['Hammam']);
+                i++;
+            }, 1000);
+
+        });
+
+
+    });
+    
+</script>
+
+</body>
+</html>

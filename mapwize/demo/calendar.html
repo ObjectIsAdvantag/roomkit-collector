@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="demoApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapwize.js Demo - Calendar</title>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/angularjs-slider/5.8.7/rzslider.min.css" />
+    <link rel="stylesheet" href="../dist/mapwize.css" />
+
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js" type="text/javascript"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-calendar/1.0.0/calendar.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angularjs-slider/5.8.7/rzslider.min.js"></script>
+
+    <script src="../dist/mapwize.js" type="text/javascript"></script>
+
+    <style>
+        #map {
+            display: block;
+            height: 700px;
+        }
+    </style>
+
+</head>
+
+<body ng-controller="DemoController">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8">
+            <div id="map"></div>
+        </div>
+        <div class="col-sm-4">
+            <div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div>
+        </div>
+    </div>
+    <rzslider rz-slider-model="slider.value"
+              rz-slider-options="slider.options"></rzslider>
+</div>
+
+
+<script>
+
+    var takenColor = '#d55757';
+    var emptyColor = '#57d56f';
+
+    function createCalendar(type) {
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+
+        function createEvent(hour) {
+            return {
+                title: 'Event at ' + hour,
+                start: new Date(y, m, d, hour, 0),
+                end: new Date(y, m, d, hour, 59, 59),
+                allDay: false
+            };
+        }
+
+        var events = [];
+        for (var hour = 0; hour < 23; hour++) {
+            if (hour % 2 == 0 && type == 'even') {
+                // pair
+                events.push(createEvent(hour));
+            }
+            if (hour % 2 != 0 && type == 'odd') {
+                // impaire
+                events.push(createEvent(hour));
+            }
+        }
+        return events;
+    }
+
+    var demoApp = angular.module('demoApp', ['ui.calendar', 'rzModule']);
+
+    demoApp.controller('DemoController', function ($scope, $interval, uiCalendarConfig) {
+        $scope.safeApply = function(fn) {
+            var phase = this.$root.$$phase;
+            if(phase === '$apply' || phase === '$digest') {
+                if(fn && (typeof(fn) === 'function')) {
+                    fn();
+                }
+            } else {
+                this.$apply(fn);
+            }
+        };
+
+        $scope.selected = null;
+
+        $scope.evenEvents = createCalendar('even');
+        $scope.oddEvents = createCalendar('odd');
+
+        $scope.placeEven = null;
+        $scope.placeOdd = null;
+
+        $scope.eventSources = [];
+        $scope.uiConfig = {
+            calendar:{
+                height: 700,
+                editable: false,
+
+                defaultView: 'agendaDay',
+                navLinks: false,
+                nowIndicator: true,
+
+                header:{
+                    left: '',
+                    center: 'title',
+                    right: ''
+                }
+            }
+        };
+
+        var date = new Date();
+        var h = date.getHours();
+
+        $scope.slider = {
+            value: h,
+            options: {
+                floor: 0,
+                ceil: 23,
+                step: 1,
+                translate: function (value) {
+                    var r = 'am';
+                    if (value > 11) {
+                        r = 'pm';
+                    }
+                    var h = ((value + 11) % 12 + 1);
+
+                    return h + r;
+                }
+            }
+        };
+        $scope.$watch('slider.value', function (value) {
+            var now = moment().hour(value + 1);
+            $scope.uiConfig.calendar.now = now.toISOString();
+
+            if ($scope.map) {
+                $scope.setPlaceColor();
+            }
+        }, true);
+
+        var mapInstance = Mapwize.map('map', {
+            apiKey: '1f04d780dc30b774c0c10f53e3c7d4ea',      // PASTE YOU API KEY HERE !!! This is a demo key. It is not allowed to use it for production. The key might change at any time without notice.
+            accessKey: 'demo'                                // Key to gain access to the demo building
+        }, function (err) {
+            if (err) {
+                console.error('Error on map init', err);
+                return;
+            }
+
+            $scope.map = mapInstance;
+
+            var bounds = new L.LatLngBounds(
+                    new L.LatLng(49.742313935073504183, 4.5989323407411575317),
+                    new L.LatLng(49.742851692813445652, 4.5997658371925345122)
+            );
+            $scope.map.fitBounds(bounds);
+
+            $scope.map.on('placeClick', function (e) {
+                var place = e.place;
+                if (place.data && place.data.hasPlanning) {
+                    if (place.data.planningType == 'even') {
+                        $scope.setEventSource($scope.evenEvents);
+                    }
+                    if (place.data.planningType == 'odd') {
+                        $scope.setEventSource($scope.oddEvents);
+                    }
+
+                    $scope.map.removeMarkers();
+                    $scope.map.addMarker(place);
+                }
+            });
+
+            Mapwize.Api.getPlace({alias: 'conference_even', venue: {alias: 'demo'}}, function (err, place) {
+                if (err) {
+                    console.error('Error on map init', err);
+                    return;
+                }
+
+                $scope.safeApply(function () {
+                    $scope.placeEven = place;
+                    $scope.setPlaceColor();
+                });
+            });
+            Mapwize.Api.getPlace({alias: 'conference_odd', venue: {alias: 'demo'}}, function (err, place) {
+                if (err) {
+                    console.error('Error on map init', err);
+                    return;
+                }
+                $scope.safeApply(function () {
+                    $scope.placeOdd = place;
+                    $scope.setPlaceColor();
+                });
+            });
+
+            // Select even place and calendar by default
+            $scope.setEventSource($scope.evenEvents);
+            $scope.map.addMarker({alias: 'conference_even', venue: {alias: 'demo'}});
+
+            $interval(function () {
+                $scope.setPlaceColor();
+            }, 60 * 1000);
+        });
+
+        $scope.setEventSource = function (source) {
+            var canSet = true;
+            angular.forEach($scope.eventSources, function (value, key) {
+                if ($scope.eventSources[key] === source) {
+                    canSet = false;
+                }
+            });
+
+            if (canSet) {
+                $scope.safeApply(function () {
+                    $scope.eventSources.splice(0, $scope.eventSources.length);
+                    $scope.eventSources.push(source);
+                });
+            }
+        };
+
+        $scope.setPlaceColor = function () {
+            var h = $scope.slider.value;
+
+            if ($scope.placeEven) {
+                if (h % 2 == 0) {
+                    // red
+                    $scope.map.setPlaceStyle($scope.placeEven._id, {
+                        fillColor: takenColor
+                    });
+                }
+                else {
+                    // green
+                    $scope.map.setPlaceStyle($scope.placeEven._id, {
+                        fillColor: emptyColor
+                    });
+                }
+            }
+
+            if ($scope.placeOdd) {
+                if (h % 2 != 0) {
+                    // red
+                    $scope.map.setPlaceStyle($scope.placeOdd._id, {
+                        fillColor: takenColor
+                    });
+                }
+                else {
+                    // green
+                    $scope.map.setPlaceStyle($scope.placeOdd._id, {
+                        fillColor: emptyColor
+                    });
+                }
+            }
+            $scope.map.refresh(true);
+        }
+
+    });
+
+
+</script>
+
+</body>
+</html>

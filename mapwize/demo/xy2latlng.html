@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapwize.js Demo - XY 2 LatLng</title>
+
+    <!-- Import Mapwize SDK -->
+    <script src="../dist/mapwize.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../dist/mapwize.css" />
+
+    <!-- Using the Sperical Mercator lib to handle the projection -->
+    <script src="https://cdn.rawgit.com/mapbox/sphericalmercator/556d2113/sphericalmercator.js" type="text/javascript"></script>
+
+    <!-- Using Async to manage multiple asynchronous steps -->
+    <script src="https://cdn.jsdelivr.net/async/2.1.5/async.js" type="text/javascript"></script>
+
+    <!-- Using Lodash for helper functions -->
+    <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.js" type="text/javascript"></script>
+
+    <!-- Using JQuery for API requests -->
+    <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            position:absolute; top:0; bottom:0; width:100%;
+            height: 100%;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+
+    var x = 0.1; //The relative position of the point on the layer in the X direction
+    var y = 0.9; //The relative position of the point on the layer in the Y direction
+
+    //Create the map
+    //use maxBounds to limit the visible area
+    var map = Mapwize.map('map', {
+        apiKey: '1f04d780dc30b774c0c10f53e3c7d4ea',      // PASTE YOU API KEY HERE !!! This is a demo key. It is not allowed to use it for production. The key might change at any time without notice.
+        accessKey: 'demo'                                // Key to gain access to the demo building
+    }, function(){
+        //This is executed when the map is loaded
+
+        var venue;
+        var layer;
+
+
+        async.series([
+            function(next){
+                //Get the demo venue
+                $.ajax({
+                    url: 'https://www.mapwize.io/api/v1/venues/56c2ea3402275a0b00fb00ac?api_key=1f04d780dc30b774c0c10f53e3c7d4ea',
+                    method: 'GET',
+                    xhrFields: {
+                        withCredentials: true
+                    }
+                })
+                .done(function(_venue){
+                    venue = _venue;
+                    console.log(venue);
+                    next();
+                })
+                .fail(function(err){
+                    console.error(err);
+                });
+            },
+            function(next){
+                //Center the map on venue
+                map.centerOnVenue(venue._id);
+                next();
+            },
+            function(next){
+                //Get the layer
+                $.ajax({
+                    url: 'https://www.mapwize.io/api/v1/layers/56c2ea4702275a0b00fb00ae?api_key=1f04d780dc30b774c0c10f53e3c7d4ea',
+                    method: 'GET',
+                    xhrFields: {
+                        withCredentials: true
+                    }
+                })
+                .done(function(_layer){
+                    layer = _layer;
+                    console.log(layer);
+                    next();
+                })
+                .fail(function(err){
+                    console.error(err);
+                });
+            },
+            function(next){
+
+                console.log(layer);
+
+
+                //Add a marker at the relative xy coordinates
+
+                var merc = new SphericalMercator({
+                    size: 256
+                });
+
+                //Get the LatLng corners of the layer
+                var latLngCorners = layer.importJob.corners;
+                var xyCorners = _.map(latLngCorners, function (latLng) {
+                    var point = merc.forward([latLng.lng,latLng.lat]);
+                    return {x:point[0],y:point[1]};
+                });
+
+                //Get the absolute layer directions for X and Y
+                var layerVectX = {
+                    x:(xyCorners[1].x - xyCorners[0].x),
+                    y:(xyCorners[1].y - xyCorners[0].y)
+                };
+                var layerVectY = {
+                    x:(xyCorners[2].x - xyCorners[0].x),
+                    y:(xyCorners[2].y - xyCorners[0].y)
+                };
+
+                //Get the point in absolute coordinates
+                var xyPoint = {
+                    x: xyCorners[0].x + layerVectX.x * x + layerVectY.x * y,
+                    y: xyCorners[0].y + layerVectX.y * x + layerVectY.y * y
+                };
+
+                //Project back into LatLng
+                var lngLatPoint = merc.inverse([xyPoint.x, xyPoint.y]);
+
+                //Add a marker on the map
+                map.addMarker({
+                    latitude: lngLatPoint[1],
+                    longitude: lngLatPoint[0],
+                    floor: layer.floor
+                });
+            }
+        ]);
+    });
+
+</script>
+
+</body>
+</html>

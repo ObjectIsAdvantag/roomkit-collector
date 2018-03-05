@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapwize.js Demo - simple map</title>
+
+    <script src="../dist/mapwize.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../dist/mapwize.css" />
+
+    <link rel="stylesheet" href="https://rawgit.com/makinacorpus/Leaflet.MeasureControl/master/docs/leaflet-draw/dist/leaflet.draw.css" />
+    <link rel="stylesheet" href="https://rawgit.com/makinacorpus/Leaflet.MeasureControl/dc3daaee/leaflet.measurecontrol.css" />
+    <script src="https://rawgit.com/makinacorpus/Leaflet.MeasureControl/master/docs/leaflet-draw/dist/leaflet.draw.js"></script>
+    <script src="https://rawgit.com/makinacorpus/Leaflet.MeasureControl/master/leaflet.measurecontrol.js"></script>
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            position:absolute; top:0; bottom:0; width:100%;
+            height: 100%;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+
+    //Define the bounds of the map
+    var bounds = new L.LatLngBounds(
+            new L.LatLng(49.742313935073504183, 4.5989323407411575317),
+            new L.LatLng(49.742851692813445652, 4.5997658371925345122)
+    );
+
+    //Create the map
+    //use maxBounds to limit the visible area
+    var map = Mapwize.map('map', {
+        apiKey: '1f04d780dc30b774c0c10f53e3c7d4ea',      // PASTE YOU API KEY HERE !!! This is a demo key. It is not allowed to use it for production. The key might change at any time without notice.
+        accessKey: 'demo'                                // Key to gain access to the demo building
+    });
+
+    map.fitBounds(bounds);
+    L.Control.measureControl().addTo(map);
+
+</script>
+
+</body>
+</html>
