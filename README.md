@@ -16,40 +16,41 @@ This repo contains 3 components:
 
 To install the API, run the instructions below:
 
-    ```shell
-    git clone https://github.com/ObjectIsAdvantag/roomkit-collector
-    cd api
-    npm install
-    ```
+```shell
+git clone https://github.com/ObjectIsAdvantag/roomkit-collector
+cd roomkit-collector
+cd api
+npm install
+```
 
 From the 'api/' directory, edit the [devices.json file](api/devices.json) with your RoomKit deployment.
 Here is an example used for Cisco Live Melbourne 2018:
 
-    ```json
-    [
-        {
-            "name": "Theater",
-            "location": "CLANZ DevNetZone Theater",
-            "ip" : "100.101.3.60",
-            "username" : "integrator",
-            "password" : "integrator"
-        },
-        {
-            "name": "Workshop1",
-            "location": "CLANZ DevNetZone Workshop1",
-            "ip" : "100.101.3.61",
-            "username" : "integrator",
-            "password" : "integrator"
-        },
-        {
-            "name": "Workshop2",
-            "location": "CLANZ DevNetZone Workshop2",
-            "ip" : "100.101.3.62",
-            "username" : "integrator",
-            "password" : "integrator"
-        }
-    ]
-    ```
+```json
+[
+    {
+        "name": "Theater",
+        "location": "CLANZ DevNetZone Theater",
+        "ip" : "100.101.3.60",
+        "username" : "integrator",
+        "password" : "integrator"
+    },
+    {
+        "name": "Workshop1",
+        "location": "CLANZ DevNetZone Workshop1",
+        "ip" : "100.101.3.61",
+        "username" : "integrator",
+        "password" : "integrator"
+    },
+    {
+        "name": "Workshop2",
+        "location": "CLANZ DevNetZone Workshop2",
+        "ip" : "100.101.3.62",
+        "username" : "integrator",
+        "password" : "integrator"
+    }
+]
+```
 
 Now, run the API in DEBUG mode, and with an observation window of 900 seconds (timeseries older than 15 min are erased):
 
@@ -64,18 +65,20 @@ You can now query the API (make sure to replace 'Theater' below by one of your d
 - GET /analytics/Theater/last => returns the latest PeopleCount value fired by the 'Theater' device 
 - GET /analytics/Theater/average?period=30 => returns an averaged PeopleCount value computed from the PeopleCount events fired by the 'Theater' device, over the last 30 seconds
 
-    ```json
-    {
-        "device": "Theater",
-        "peopleCount": 8.508,
-        "period": "30",
-        "unit": "seconds"
-    }
-    ```
+```json
+{
+    "device": "Theater",
+    "peopleCount": 8.508,
+    "period": "30",
+    "unit": "seconds"
+}
+```
 
-    Note that the average weighted value is not rounded.
+_Note that the average weighted value is not rounded._
 
 
 ## History
+
+v0.2: updates for Cisco Live Melbourne
 
 v0.1: created at [BCX18 - Bosch IoT Hackathon Berlin](https://github.com/ObjectIsAdvantag/hackathon-resources/tree/master/bcx18-berlin)
