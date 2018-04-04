@@ -40,12 +40,12 @@
 
         var devices = {};
 
-        devices['Theater'] = {
-            "peopleCountURL": "http://localhost:8080/analytics/Theater/average?period=15"
+        devices['DevNetBooth'] = {
+            "peopleCountURL": "http://localhost:8080/analytics/DevNetBooth/average?period=15"
         }
 
-        devices['Workshop1'] = {
-            "peopleCountURL": "http://localhost:8080/analytics/Workshop1/average?period=15"
+        devices['RegistrationDesk'] = {
+            "peopleCountURL": "http://localhost:8080/analytics/RegistrationDesk/average?period=15"
         }
 
         var tooltips = {};
@@ -85,7 +85,7 @@
 
             $.ajax(settings)
                 .done(function (data, textStatus, jqXHR) {
-                    var count = data.peopleCount;
+                    var count = Math.round(data.peopleCount);
                     console.debug(`fetched count: ${count}, for device: ${device}`);
 
                     setTooltipContentOnPlace("" + count, place);
@@ -101,9 +101,9 @@
             });
         }
 
-        Mapwize.setApiKey('44522145c08665f3fbd051d78694243a');
+        Mapwize.setApiKey('b868c540377e5f5ca7c796f19a036d50');
 
-        var venueId = '5a8d9820c2474a0013d70666';
+        var venueId = '5aaba9d5416c37001d6be88d';
         Mapwize.Api.getVenue(venueId, function (err, venue) {
             if (err) {
                 console.error(err);
@@ -131,7 +131,7 @@
 
                 setInterval(function () {
                     updateTooltips(places);
-                }, 5000);
+                }, 3000);
             });
         });
 

@@ -79,6 +79,8 @@ _Note that the average weighted value is not rounded._
 
 ## History
 
-v0.2: updates for Cisco Live Melbourne
+v0.3: updates for [Cisco Connect Finland](https://www.cisco.com/c/m/fi_fi/training-events/2018/cisco-connect/index.html#~stickynav=2) (Messukeskus)
+
+v0.2: updates for [Cisco Live Melbourne](https://www.ciscolive.com/anz/)
 
 v0.1: created at [BCX18 - Bosch IoT Hackathon Berlin](https://github.com/ObjectIsAdvantag/hackathon-resources/tree/master/bcx18-berlin)

@@ -1,15 +1,15 @@
 [
     {
-        "name": "Theater",
-        "location": "CLANZ DevNetZone Theater",
-        "ip" : "192.168.1.34",
+        "name": "DevNetBooth",
+        "location": "Messukeskus DevNetZone",
+        "ip" : "198.19.11.136",
         "username" : "integrator",
         "password" : "integrator"
     },
     {
-        "name": "Workshop1",
-        "location": "CLANZ DevNetZone Workshop1",
-        "ip" : "100.103.1.11",
+        "name": "RegistrationDesk",
+        "location": "Messukesks Registration",
+        "ip" : "198.19.11.20",
         "username" : "integrator",
         "password" : "integrator"
     }
