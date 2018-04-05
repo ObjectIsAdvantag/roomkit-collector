@@ -85,10 +85,10 @@
 
             $.ajax(settings)
                 .done(function (data, textStatus, jqXHR) {
-                    var count = Math.round(data.peopleCount);
-                    console.debug(`fetched count: ${count}, for device: ${device}`);
+                    var count = parseInt(data.peopleCount);
+                    console.debug(`fetched count: ${count}, for device: ${place.name}`);
 
-                    setTooltipContentOnPlace("" + count, place);
+                    setTooltipContentOnPlace("" + Math.round(count + 0.5), place);
                 })
                 .fail(function (jqXHR, textStatus) {
                     console.debug(`Request failed: ${textStatus}`);
