@@ -43,7 +43,29 @@ app.route("/")
 
 const { latest, averageOnPeriod } = require("./collector");
 
-app.get("/analytics/:device/last", function (req, res) {
+app.get("/devices", function (req, res) {
+    try {
+        const devices = require("./devices.json");
+
+        const mapped = devices.map((device) => {
+            return {
+                name: device.name,
+                location: device.location,
+                ip: device.ip
+            };
+        });
+
+        res.json(mapped);
+    }
+    catch (err) {
+        res.status(500).json({
+            message: `no devices list`
+        });
+        return;
+    }
+})
+
+app.get("/devices/:device/last", function (req, res) {
     const device = req.params.device;
 
     // Retreive count data for device
@@ -62,7 +84,7 @@ app.get("/analytics/:device/last", function (req, res) {
     });
 })
 
-app.get("/analytics/:device/average", function (req, res) {
+app.get("/devices/:device/average", function (req, res) {
     const device = req.params.device;
 
     // Get period (in seconds)
@@ -97,5 +119,7 @@ var port = process.env.OVERRIDE_PORT || process.env.PORT || 8080;
 app.listen(port, function () {
     console.log("Collector API started at http://localhost:" + port + "/");
     console.log("   GET / for healthcheck");
-    console.log("   GET /analytics/{device} for data");
+    console.log("   GET /devices for the list of devices");
+    console.log("   GET /devices/{device}/last for latest PeopleCount value received");
+    console.log("   GET /devices/{device}/average?period=30 for a computed average");
 });

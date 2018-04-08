@@ -62,8 +62,9 @@ All set!
 You can now query the API (make sure to replace 'Theater' below by one of your devices);
 
 - GET / => healthcheck
-- GET /analytics/Theater/last => returns the latest PeopleCount value fired by the 'Theater' device 
-- GET /analytics/Theater/average?period=30 => returns an averaged PeopleCount value computed from the PeopleCount events fired by the 'Theater' device, over the last 30 seconds
+- GET /devices => returns the list of devices for which data is  collected
+- GET /devices/Theater/last => returns the latest PeopleCount value fired by the 'Theater' device 
+- GET /devices/Theater/average?period=30 => returns an averaged PeopleCount value computed from the PeopleCount events fired by the 'Theater' device, over the last 30 seconds
 
 ```json
 {
@@ -78,6 +79,8 @@ _Note that the average weighted value is not rounded._
 
 
 ## History
+
+v0.4: updates for [DevNet Create](https://devnetcreate.io/)
 
 v0.3: updates for [Cisco Connect Finland](https://www.cisco.com/c/m/fi_fi/training-events/2018/cisco-connect/index.html#~stickynav=2) (Messukeskus)
 
