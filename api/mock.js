@@ -63,6 +63,31 @@ app.get("/devices", function (req, res) {
     }
 })
 
+app.get("/devices/:device", function (req, res) {
+    try {
+        const devices = require("./devices.json");
+
+        let device = devices.find(function(elem) { return (elem.name == "Workbench1") })
+        if (!device) {
+            res.status(404).json({
+                message: "device not found"
+            })
+            return
+        }
+        
+        res.json({
+            name: device.name,
+            location: device.location,
+            ip: device.ip
+        })
+    }
+    catch (err) {
+        res.status(500).json({
+            message: `no devices list`
+        });
+    }
+})
+
 app.get("/devices/:device/last", function (req, res) {
     const device = req.params.device;
 
@@ -84,7 +109,7 @@ app.get("/devices/:device/average", function (req, res) {
     }
 
     // Mock'ed data
-    const count = Math.round(Math.random() * 5 + 2);
+    const count = Math.round(Math.random() * 7 - 1);
     fine(`returned mock average: ${count}, for device: ${device}`)
     res.json({
         device: device,
@@ -102,6 +127,7 @@ app.listen(port, function () {
     console.log("Collector API started at http://localhost:" + port + "/");
     console.log("   GET / for healthcheck");
     console.log("   GET /devices for the list of devices");
+    console.log("   GET /devices/{device} to get the details for the specified device");
     console.log("   GET /devices/{device}/last for latest PeopleCount value received");
     console.log("   GET /devices/{device}/average?period=30 for a computed average");
 });

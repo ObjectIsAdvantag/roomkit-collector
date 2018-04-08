@@ -10,7 +10,7 @@ const collector = require("../collector");
 console.log(`waiting 30 seconds`);
 setTimeout(function () {
 
-    var device = "Theater";
+    var device = "Workbench1";
     setInterval(function () {
 
         console.log(`computing barycentre for device: ${device}`);

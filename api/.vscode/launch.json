@@ -14,6 +14,15 @@
                 "DEBUG" : "api*,collector*,barycentre*",
                 "PORT" : 9090
             }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mock",
+            "program": "${workspaceFolder}\\mock.js",
+            "env" : {
+                "PORT" : 9090
+            }
         }
     ]
 }
