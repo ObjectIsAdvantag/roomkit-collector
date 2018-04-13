@@ -5,15 +5,23 @@
 
 
 /**
- * REST API that exposes RoomAnalytics
+ * Mock version of a REST API that exposes RoomAnalytics
  */
 
-var debug = require("debug")("api");
-var fine = require("debug")("api:fine");
+const debug = require("debug")("api");
+const fine = require("debug")("api:fine");
 
+var devices;
+try {
+    devices = require("./devices.json");
+}
+catch (err) {
+    console.log("Please specify a list of devices.")
+    process.exit(-1)
+}
 
 //
-// HTTP Service
+// Web API
 // 
 
 var express = require("express");
@@ -36,71 +44,54 @@ app.route("/")
     // healthcheck
     .get(function (req, res) {
         res.json({
-            message: "Congrats, your RoomAnalytics Aggregator is up and running",
+            message: "Congrats, your RoomAnalytics Aggregator Mock is up and running",
             since: new Date(started).toISOString()
         });
     })
 
 app.get("/devices", function (req, res) {
-    try {
-        const devices = require("./devices.json");
+    const mapped = devices.map((device) => {
+        return {
+            id: device.id,
+            location: device.location,
+            ipAddress: device.ipAddress
+        };
+    });
 
-        const mapped = devices.map((device) => {
-            return {
-                name: device.name,
-                location: device.location,
-                ip: device.ip
-            };
-        });
-
-        res.json(mapped);
-    }
-    catch (err) {
-        res.status(500).json({
-            message: `no devices list`
-        });
-        return;
-    }
+    res.json(mapped);
 })
 
 app.get("/devices/:device", function (req, res) {
-    try {
-        const devices = require("./devices.json");
-
-        let device = devices.find(function(elem) { return (elem.name == "Workbench1") })
-        if (!device) {
-            res.status(404).json({
-                message: "device not found"
-            })
-            return
-        }
-        
-        res.json({
-            name: device.name,
-            location: device.location,
-            ip: device.ip
+    let found = devices.find(function (device) {
+        return (device.id === id)
+    })
+    if (!found) {
+        res.status(404).json({
+            message: "device not found"
         })
+        return
     }
-    catch (err) {
-        res.status(500).json({
-            message: `no devices list`
-        });
-    }
+
+    res.json({
+        id: found.id,
+        location: found.location,
+        ipAddress: found.ipAddress
+    })
 })
 
 app.get("/devices/:device/last", function (req, res) {
-    const device = req.params.device;
+    const id = req.params.device;
 
     const count = Math.round(Math.random() * 5 + 2);
-    fine(`returned mock latest: ${count}, for device: ${device}`)
+    fine(`returned mock latest: ${count}, for device: ${id}`)
     res.json({
-        device: device,
+        id: id,
         peopleCount: count
     });
 })
 
 app.get("/devices/:device/average", function (req, res) {
-    const device = req.params.device;
+    const id = req.params.device;
 
     // Get period (in seconds)
     let period = req.query.period;
@@ -110,9 +101,9 @@ app.get("/devices/:device/average", function (req, res) {
 
     // Mock'ed data
     const count = Math.round(Math.random() * 7 - 1);
-    fine(`returned mock average: ${count}, for device: ${device}`)
+    fine(`returned mock average: ${count}, for device: ${id}`)
     res.json({
-        device: device,
+        id: id,
         peopleCount: count,
         period: period,
         unit: "seconds"

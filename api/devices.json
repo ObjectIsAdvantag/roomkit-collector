@@ -1,22 +1,22 @@
 [
     {
-        "name": "Workbench1",
+        "id": "Workbench1",
         "location": "Workshop 1",
-        "ip" : "192.68.1.32",
+        "ipAddress" : "192.68.1.32",
         "username" : "integrator",
         "password" : "integrator"
     },
     {
-        "name": "Workbench2",
+        "id": "Workbench2",
         "location": "Workshop 2",
-        "ip" : "192.68.1.33",
+        "ipAddress" : "192.68.1.33",
         "username" : "integrator",
         "password" : "integrator"
     },
     {
-        "name": "Workbench3",
+        "id": "Workbench3",
         "location": "Workshop 3",
-        "ip" : "192.68.1.34",
+        "ipAddress" : "192.68.1.34",
         "username" : "integrator",
         "password" : "integrator"
     }

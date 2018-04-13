@@ -8,20 +8,20 @@
             "type": "node",
             "request": "launch",
             "name": "API",
-            "program": "${workspaceFolder}\\server.js",
+            "program": "${workspaceFolder}/server.js",
             "env" : {
-                "WINDOW" : 900,
+                "WINDOW" : "900",
                 "DEBUG" : "api*,collector*,barycentre*",
-                "PORT" : 9090
+                "PORT" : "9090"
             }
         },
         {
             "type": "node",
             "request": "launch",
             "name": "Mock",
-            "program": "${workspaceFolder}\\mock.js",
+            "program": "${workspaceFolder}/mock.js",
             "env" : {
-                "PORT" : 9090
+                "PORT" : "9090"
             }
         }
     ]
