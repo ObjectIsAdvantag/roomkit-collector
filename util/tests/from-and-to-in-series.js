@@ -6,7 +6,10 @@ var data = [
     ["2018-02-21T20:24:16.000Z", 10]
 ];
 
-const { computeBarycentre } = require("../barycentre");
+const { max } = require("../max");
+var res = max(data, "2018-02-21T20:24:11.000Z", "2018-02-21T20:24:13.000Z");
+console.log(`computed max: ${res}, expecting: 3`);
 
+const { computeBarycentre } = require("../barycentre");
 var res = computeBarycentre(data, "2018-02-21T20:24:11.000Z", "2018-02-21T20:24:13.000Z");
 console.log(`computed weighted: ${res}, expecting: 1.5`);

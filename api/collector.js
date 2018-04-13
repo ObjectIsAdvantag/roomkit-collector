@@ -109,7 +109,7 @@ devices.forEach(device => {
 
 // Collect interval (moving window of collected time series)
 var window = process.env.WINDOW ? process.env.WINDOW : 15 * 60; // in seconds 
-debug(`collecting window: ${window} second(s)`);
+debug(`collecting window: ${window} seconds`);
 
 // Individual store cleaner
 function cleanStore(store) {
@@ -186,4 +186,25 @@ module.exports.latest = function (device) {
     fine(`found last serie with value: ${lastSerie[1]}, date: ${lastSerie[0]}, for device: ${device}`);
 
     return lastSerie[1];
+}
+
+const { max } = require("./max");
+
+module.exports.max = function (device) {
+    fine(`searching store for device: ${device}`);
+    const store = stores[device];
+    if (!store) {
+        fine(`could not find store for device: ${device}`);
+        return undefined;
+    }
+    fine(`found store for device: ${device}`);
+
+    // Looking for max value in series
+    const to = new Date(Date.now()).toISOString();
+    const from = new Date(Date.now() - period*1000).toISOString();
+    const maxSerie = computeMax(store, from, to);
+
+    fine(`found max value: ${maxSerie[1]}, date: ${maxSerie[0]}, for device: ${device}`);
+
+    return maxSerie;
 }

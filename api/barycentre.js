@@ -3,12 +3,9 @@
 // Licensed under the MIT License 
 //
 
-/** 
- * Collects PeopleCount analystics from a collection of RoomKits
- */
 
-const debug = require("debug")("barycentre");
-const fine = require("debug")("barycentre:fine");
+const debug = require("debug")("barycentre")
+const fine = require("debug")("barycentre:fine")
 
  
 // A series is an ordered collection of ticks and values
