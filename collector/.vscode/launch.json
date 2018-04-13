@@ -1,0 +1,62 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "API",
+            "cwd": "${workspaceFolder}/api",
+            "program": "${workspaceFolder}/api/server.js",
+            "env" : {
+                "DEBUG" : "collector*, api*",
+                "WINDOW" : 30
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Collect",
+            "cwd": "${workspaceFolder}/collector",
+            "program": "${workspaceFolder}/collector/collect.js",
+            "env" : {
+                "DEBUG" : "collector*"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Collect (Window)",
+            "cwd": "${workspaceFolder}/collector",
+            "program": "${workspaceFolder}/collector/collect-window.js",
+            "env" : {
+                "DEBUG" : "collector*",
+                "WINDOW" : 30
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Collector (Barycentre)",
+            "cwd": "${workspaceFolder}/collector/tests",
+            "program": "${workspaceFolder}/collector/tests/schedule-barycentre.js",
+            "env" : {
+                "DEBUG" : "*",
+                "WINDOW" : 900
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Barycentre",
+            "cwd": "${workspaceFolder}/util/tests",
+            "program": "${workspaceFolder}/util/tests/to-after-last-counter.js",
+            "env" : {
+                "DEBUG" : "*",
+                "WINDOW" : 900
+            }
+        }
+    ]
+}

@@ -62,6 +62,8 @@ app.get("/devices", function (req, res) {
 })
 
 app.get("/devices/:device", function (req, res) {
+    const id = req.params.device;
+
     let found = devices.find(function (device) {
         return (device.id === id)
     })

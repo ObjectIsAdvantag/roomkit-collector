@@ -8,54 +8,20 @@
             "type": "node",
             "request": "launch",
             "name": "API",
-            "cwd": "${workspaceFolder}/api",
-            "program": "${workspaceFolder}/api/server.js",
+            "program": "${workspaceFolder}/server.js",
             "env" : {
-                "DEBUG" : "collector*, api*",
-                "WINDOW" : 30
+                "WINDOW" : "900",
+                "DEBUG" : "api*,collector*,barycentre*,max*",
+                "PORT" : "9090"
             }
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Collect",
-            "cwd": "${workspaceFolder}/collector",
-            "program": "${workspaceFolder}/collector/collect.js",
+            "name": "Mock",
+            "program": "${workspaceFolder}/mock.js",
             "env" : {
-                "DEBUG" : "collector*"
-            }
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Collect (Window)",
-            "cwd": "${workspaceFolder}/collector",
-            "program": "${workspaceFolder}/collector/collect-window.js",
-            "env" : {
-                "DEBUG" : "collector*",
-                "WINDOW" : 30
-            }
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Collector (Barycentre)",
-            "cwd": "${workspaceFolder}/collector/tests",
-            "program": "${workspaceFolder}/collector/tests/schedule-barycentre.js",
-            "env" : {
-                "DEBUG" : "*",
-                "WINDOW" : 900
-            }
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Barycentre",
-            "cwd": "${workspaceFolder}/util/tests",
-            "program": "${workspaceFolder}/util/tests/to-after-last-counter.js",
-            "env" : {
-                "DEBUG" : "*",
-                "WINDOW" : 900
+                "PORT" : "9090"
             }
         }
     ]

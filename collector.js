@@ -150,7 +150,7 @@ setInterval(function () {
 // Return people count for the device and averaged on the period (in seconds)
 //
 
-const { computeBarycentre } = require("./barycentre");
+const { computeBarycentre } = require("./util/barycentre");
 
 module.exports.averageOnPeriod = function (device, period) {
     fine(`searching store for device: ${device}`);
@@ -188,7 +188,7 @@ module.exports.latest = function (device) {
     return lastSerie[1];
 }
 
-const { max } = require("./max");
+const { max } = require("./util/max");
 
 module.exports.max = function (device) {
     fine(`searching store for device: ${device}`);
