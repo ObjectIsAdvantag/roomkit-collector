@@ -1,6 +1,6 @@
 {
   "name": "roomkit-collector",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "Aggregates PeopleCount metrics from RoomKits",
   "main": "server.js",
   "dependencies": {
