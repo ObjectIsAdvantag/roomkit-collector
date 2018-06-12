@@ -11,9 +11,6 @@
 var debug = require("debug")("api");
 var fine = require("debug")("api:fine");
 
-const debug = require("debug")("api");
-const fine = require("debug")("api:fine");
-
 var devices;
 try {
     devices = require("./devices.json");
