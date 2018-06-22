@@ -78,15 +78,16 @@ devices.forEach(device => {
                     // Listen to events
                     fine(`adding feedback listener to device: ${device.id}`);
                     xapi.feedback.on('/Status/RoomAnalytics/PeopleCount', (counter) => {
-                        fine(`new PeopleCount for device: ${device.id}`);
+                        fine(`new PeopleCount: ${counter.Current}, for device: ${device.id}`);
 
+                        // fetch PeopleCount value
+                        var count = parseInt(counter.Current); // turn from string to integer
                         if (count == -1) {
-                            debug(`WARNING: device has stopped counting: ${device.id}`);
+                            debug(`WARNING: device '${device.id}' has stopped counting`);
                             return;
                         }
 
                         // register new TimeSeries
-                        var count = counter.Current;
                         addCounter(device, new Date(Date.now()), count);
                     });
 
