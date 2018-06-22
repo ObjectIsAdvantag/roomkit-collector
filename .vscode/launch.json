@@ -12,7 +12,7 @@
             "env" : {
                 "WINDOW" : "900",
                 "DEBUG" : "api*,collector*,barycentre*,max*",
-                "PORT" : "9090"
+                "PORT" : "8080"
             }
         },
         {
@@ -21,7 +21,7 @@
             "name": "Mock",
             "program": "${workspaceFolder}/mock.js",
             "env" : {
-                "PORT" : "9090"
+                "PORT" : "8080"
             }
         }
     ]

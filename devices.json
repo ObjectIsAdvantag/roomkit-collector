@@ -2,21 +2,21 @@
     {
         "id": "Workbench1",
         "location": "Workshop 1",
-        "ipAddress" : "172.17.101.87",
+        "ipAddress" : "192.168.1.34",
         "username" : "integrator",
         "password" : "integrator"
     },
     {
         "id": "Workbench2",
         "location": "Workshop 2",
-        "ipAddress" : "172.17.101.89",
+        "ipAddress" : "192.168.1.89",
         "username" : "integrator",
         "password" : "integrator"
     },
     {
         "id": "Workbench3",
         "location": "Workshop 3",
-        "ipAddress" : "172.17.101.60",
+        "ipAddress" : "192.168.1.60",
         "username" : "integrator",
         "password" : "integrator"
     },
@@ -30,28 +30,28 @@
     {
         "id": "Workbench5",
         "location": "Workshop 5",
-        "ipAddress" : "172.17.101.66",
+        "ipAddress" : "192.168.1.66",
         "username" : "integrator",
         "password" : "integrator"
     },
     {
         "id": "Workbench6",
         "location": "Workshop 6",
-        "ipAddress" : "172.17.101.70",
+        "ipAddress" : "192.168.1.70",
         "username" : "integrator",
         "password" : "integrator"
     },
     {
         "id": "Workbench7",
         "location": "Workshop 7",
-        "ipAddress" : "172.17.101.73",
+        "ipAddress" : "192.168.1.73",
         "username" : "integrator",
         "password" : "integrator"
     },
     {
         "id": "Classroom2",
         "location": "Classroom 2",
-        "ipAddress" : "172.17.101.83",
+        "ipAddress" : "192.168.1.83",
         "username" : "integrator",
         "password" : "integrator"
     }

@@ -42,36 +42,36 @@ function connect(device) {
 // Time series storage
 const stores = {};
 function createStore(device) {
-    stores[device.name] = [];
+    stores[device.id] = [];
 }
 function addCounter(device, date, count) {
-    fine(`adding count: ${count}, for device: ${device.name}`)
+    fine(`adding count: ${count}, for device: ${device.id}`)
 
-    const store = stores[device.name];
+    const store = stores[device.id];
     store.push([date.toISOString(), count]);
 }
 
 
-const devices = require("./devices.json");
+const devices = require("../devices.json");
 
 devices.forEach(device => {
 
-    fine(`connecting to device: ${device.name}`)
+    fine(`connecting to device: ${device.id}`)
     connect(device)
 
         .then(xapi => {
-            debug(`connected to device: ${device.name}`);
+            debug(`connected to device: ${device.id}`);
 
             // Check devices can count
             xapi.status
                 .get('RoomAnalytics PeopleCount')
                 .then((counter) => {
-                    fine(`fetched PeopleCount for device: ${device.name}`);
+                    fine(`fetched PeopleCount for device: ${device.id}`);
 
                     // Abort if device does not count
                     var count = counter.Current;
                     if (count == -1) {
-                        debug(`device is not counting: ${device.name}`);
+                        debug(`device is not counting: ${device.id}`);
                         return;
                     }
 
@@ -80,12 +80,12 @@ devices.forEach(device => {
                     addCounter(device, new Date(Date.now()), count);
 
                     // Listen to events
-                    fine(`adding feedback listener to device: ${device.name}`);
+                    fine(`adding feedback listener to device: ${device.id}`);
                     xapi.feedback.on('/Status/RoomAnalytics/PeopleCount', (counter) => {
-                        fine(`new PeopleCount for device: ${device.name}`);
+                        fine(`new PeopleCount for device: ${device.id}`);
 
                         if (count == -1) {
-                            debug(`WARNING: device has stopped counting: ${device.name}`);
+                            debug(`WARNING: device has stopped counting: ${device.id}`);
                             return;
                         }
 
@@ -102,6 +102,6 @@ devices.forEach(device => {
                 });
         })
         .catch(err => {
-            debug(`could not connect device: ${device.name}`)
+            debug(`could not connect device: ${device.id}`)
         })
 });

@@ -49,7 +49,7 @@ app.route("/")
         });
     })
 
-const { latest, averageOnPeriod } = require("./collector");
+const { latest, averageOnPeriod } = require("./collector.js");
 
 app.get("/devices", function (req, res) {
     const mapped = devices.map((device) => {
@@ -64,6 +64,8 @@ app.get("/devices", function (req, res) {
 })
 
 app.get("/devices/:device", function (req, res) {
+    const id = req.params.device;
+
     let found = devices.find(function (device) {
         return (device.id === id)
     })
