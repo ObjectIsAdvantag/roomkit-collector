@@ -1,9 +1,9 @@
 # PeopleCount Collector for Room Devices
 
-Collects PeopleCount events from SX, MX, Room Devices as time series, and exposes derivated counters via a REST API.
+Collects PeopleCount events from Webex Room Devices as time series, and exposes derivated counters via a REST API.
 
 Background: 
-- Room Devices fire events every time they notice a change. As participants in meeting roms happen to move their head, it is frequent to see updates to the PeopleCount counter even though no participant entered or left the room. Thus, when queried several times, even in close intervals, the PeopleCount value returned by a Room Kit would be expected to differ.
+- Webex Room Devices fire events every time they notice a change. As participants in meeting roms happen to move their head, it is frequent to see updates to the PeopleCount counter even though no participant entered or left the room. Thus, when queried several times, even in close intervals, the PeopleCount value returned by a Room Kit would be expected to differ.
 - The collector batch utility and 'barycentre' computation help create a stable counter for each device part of a RoomKit deployment. Concretely, PeopleCounter events for each device are collected and stored in an in-memory timeseries database. Moreover, a REST API lets you retreive computed averaged values for a custom period of time.
 
 This repo contains 3 components:
@@ -12,9 +12,9 @@ This repo contains 3 components:
 3. [a REST API](server.js): exposes the latest and average weighted value from PeopleCount events fired by a [pre-configured list of devices](devices.json). Note that a [Mock](mock.js) exposes random values for the same list of devices.
 
 
-## API
+## Quickstart
 
-To install the API, run the instructions below:
+To install and configure the collector, run the instructions below:
 
 ```shell
 git clone https://github.com/ObjectIsAdvantag/roomkit-collector
@@ -22,8 +22,9 @@ cd roomkit-collector
 npm install
 ```
 
-Let's now configure the API for your Room Devices deployment.
-From the 'api/' directory, edit the [devices.json file](api/devices.json) with your RoomKit deployment.
+Let's now configure the collector for your Room Devices deployment:
+Edit the [devices.json file](devices.json) with your Room Devices deployment.
+
 Here is an example used for DevNet Create 2018:
 
 ```json
@@ -46,14 +47,15 @@ Here is an example used for DevNet Create 2018:
 ]
 ```
 
-Now, we wimm run the API in DEBUG mode, and with an observation window of 60 seconds (time series older than 1 minute are erased):
+Now, we will run the collector in DEBUG mode, and with an observation window of 60 seconds (time series older than 1 minute are erased):
 
 ```shell
 DEBUG=collector*,api*  WINDOW=60   node server.js
 ```
 
 All set! 
-You can now query the API (make sure to replace 'Theater' below by one of your devices);
+
+You can now query the Collector's API (make sure to replace `Workbench1` below by one of the devices identifier configured in your devices.json):
 
 - GET / => healthcheck
 - GET /devices => returns the list of devices for which data is  collected
@@ -71,7 +73,7 @@ You can now query the API (make sure to replace 'Theater' below by one of your d
 }
 ```
 
-_Note that the average weighted value is not rounded by default._
+_Note that the average weighted value is not rounded by default, in order to maximize your options to use these averages._
 
 
 ## History
