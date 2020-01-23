@@ -1,8 +1,7 @@
-node_modules
-
+node_modules/
 *.debug
 
-work
+work/
 
 *-lock.json
 *.lock

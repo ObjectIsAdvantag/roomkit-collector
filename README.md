@@ -32,17 +32,23 @@ Here is an example used for DevNet Create 2018:
   {
     "id": "Workbench1",
     "location": "Workshop 1",
-    "ipAddress": "192.68.1.32"
+    "ipAddress": "192.68.1.32",
+    "username" : "integrator",
+    "password" : "integrator"
   },
   {
     "id": "Workbench2",
     "location": "Workshop 2",
-    "ipAddress": "192.68.1.33"
+    "ipAddress": "192.68.1.33",
+    "username" : "integrator",
+    "password" : "integrator"
   },
   {
     "id": "Workbench3",
     "location": "Workshop 3",
-    "ipAddress": "192.68.1.34"
+    "ipAddress": "192.68.1.34",
+    "username" : "integrator",
+    "password" : "integrator"
   }
 ]
 ```
@@ -63,6 +69,10 @@ You can now query the Collector's API (make sure to replace `Workbench1` below b
 - GET /devices/Workbench1/last => returns the latest PeopleCount value fired by the 'Workbench1' device
 - GET /devices/Workbench1/max => returns the max value on the default period (15 seconds)  
 - GET /devices/Workbench1/average?period=60 => returns an averaged PeopleCount value computed from the PeopleCount events fired by the 'Workbench1' device, over the last 60 seconds
+
+Example:
+
+`GET http://localhost:8080/devices/Workbench1/average?period=60`
 
 ```json
 {
