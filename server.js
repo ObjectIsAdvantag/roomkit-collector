@@ -44,7 +44,8 @@ app.route("/")
     // healthcheck
     .get(function (req, res) {
         res.json({
-            message: "Congrats, your RoomAnalytics Aggregator is up and running",
+            message: "Congrats, the PeopleCount Collector API is up and running",
+            help: "Try: GET /devices to fetch a list of devices",
             since: new Date(started).toISOString()
         });
     })

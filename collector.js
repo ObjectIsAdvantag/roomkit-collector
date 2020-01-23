@@ -93,8 +93,8 @@ devices.forEach(device => {
 
                 })
                 .catch((err) => {
-                    console.log(`Failed to fetch PeopleCount for device: ${device.id}, err: ${err.message}`);
-                    console.log(`Are you interacting with a Room Device? aborting...`);
+                    debug(`Failed to retrieve PeopleCount status for device: ${device.id}, err: ${err.message}`);
+                    console.log(`Please check your configuration: seems that '${device.id}' is NOT a Room device.`);
                     xapi.close();
                 });
         })

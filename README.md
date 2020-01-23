@@ -1,15 +1,15 @@
 # PeopleCount Collector for Room Devices
 
-Collects PeopleCount events from Webex Room Devices as time series, and exposes derivated counters via a REST API.
+Collects PeopleCount events from Webex Room Devices, stores them in an in-memory Time Series database to compute weighted averages over flexible time windows, and returns these data through a RESTful API.
 
 Background: 
 - Webex Room Devices fire events every time they notice a change. As participants in meeting roms happen to move their head, it is frequent to see updates to the PeopleCount counter even though no participant entered or left the room. Thus, when queried several times, even in close intervals, the PeopleCount value returned by a Room Kit would be expected to differ.
 - The collector batch utility and 'barycentre' computation help create a stable counter for each device part of a RoomKit deployment. Concretely, PeopleCounter events for each device are collected and stored in an in-memory timeseries database. Moreover, a REST API lets you retreive computed averaged values for a custom period of time.
 
 This repo contains 3 components:
-1. [a 'barycentre' utility](util/barycentre.js): computes an average value from a Time Series, by weighting each value based on its duration (before next event happens)
-2. [a collector batch](collector/collector.js): collects PeopleCount events for a pre-configured list of devices, and stores them as TimeSeries (also recycles all elapsed TimeSeries, aka, out of the observation window)
-3. [a REST API](server.js): exposes the latest and average weighted value from PeopleCount events fired by a [pre-configured list of devices](devices.json). Note that a [Mock](mock.js) exposes random values for the same list of devices.
+1. [a collector batch](collector/collector.js): collects PeopleCount events for a pre-configured list of devices, and stores them as TimeSeries (also recycles all elapsed TimeSeries, aka, out of the observation window),
+2. [a 'barycentre' utility](util/barycentre.js): computes an average value from a Time Series, by weighting each value based on its duration (before next event happens,
+3. [a REST API](server.js): exposes the latest and average weighted value from PeopleCount events fired by a [pre-configured list of devices](devices.json). 
 
 
 ## Quickstart
@@ -25,7 +25,7 @@ npm install
 Let's now configure the collector for your Room Devices deployment:
 Edit the [devices.json file](devices.json) with your Room Devices deployment.
 
-Here is an example used for DevNet Create 2018:
+Here is an example of a deployment of RoomKits in the DevNet Zone:
 
 ```json
 [
@@ -56,7 +56,27 @@ Here is an example used for DevNet Create 2018:
 Now, we will run the collector in DEBUG mode, and with an observation window of 60 seconds (time series older than 1 minute are erased):
 
 ```shell
-DEBUG=collector*,api*  WINDOW=60   node server.js
+# Starts the collector collecting PeopleCount for devices listed in devices.json, and computes averages over 60s periods
+DEBUG=collector*,api*  WINDOW=60 node server.js
+...
+  collector:fine connecting to device: Workbench1 +0ms
+  collector:fine connecting to device: Workbench2 +16ms
+  collector:fine connecting to device: Workbench3 +18ms
+  collector collecting window: 60 seconds +0ms
+
+Collector API started at http://localhost:8080/
+   GET / for healthcheck
+   GET /devices for the list of devices
+   GET /devices/{device} to get the details for the specified device
+   GET /devices/{device}/last for latest PeopleCount value received
+   GET /devices/{device}/average?period=30 for a computed average
+
+  collector:fine connexion successful for device: Workbench1 +334ms
+  collector connected to device: Workbench1 +336ms
+  collector:fine fetched PeopleCount for device: Workbench1 +17ms
+  collector:fine adding count: 0, for device: Workbench1 +1ms
+  collector:fine adding feedback listener to device: Workbench1 +1ms
+...
 ```
 
 All set! 
@@ -86,7 +106,34 @@ Example:
 _Note that the average weighted value is not rounded by default, in order to maximize your options to use these averages._
 
 
+## Mock service
+
+For tests purpose, a mock mimics the collector API and returns random data for the same list of devices.
+
+```shell
+DEBUG=collector*,api*  WINDOW=60 node mock.js
+...
+Collector API started at http://localhost:8080/
+   GET / for healthcheck
+   GET /devices for the list of devices
+   GET /devices/{device} to get the details for the specified device
+   GET /devices/{device}/last for latest PeopleCount value received
+   GET /devices/{device}/average?period=30 for a computed average
+
+  api:fine returned mock latest: 7, for device: Workbench1 +0ms
+  api:fine returned mock latest: 4, for device: Workbench1 +2s
+  api:fine returned mock latest: 6, for device: Workbench1 +879ms
+  api:fine returned mock average: -1, for device: Workbench1 +9s
+  api:fine returned mock average: 1, for device: Workbench1 +3s
+...
+```
+
+
 ## History
+
+v1.0: release for DevNet Automation Exchange
+
+v0.5: updates for Cisco Live US 2018
 
 v0.4: updates for [DevNet Create](https://devnetcreate.io/) with a [React Map](https://github.com/ObjectIsAdvantag/roomkit-react-map) companion
 

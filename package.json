@@ -1,7 +1,7 @@
 {
   "name": "roomkit-collector",
-  "version": "0.5.1",
-  "description": "Aggregates PeopleCount metrics from RoomKits",
+  "version": "1.0.0",
+  "description": "Collects PeopleCount metrics from Webex Room devices and computes weighted averages",
   "main": "server.js",
   "dependencies": {
     "debug": "^4.1.1",
